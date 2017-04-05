@@ -1,6 +1,6 @@
 # Cambia las IP por las de tus máquinas
 # Cambia la localización de la clave privada de las máquinas vagrant
-digitalocean  ansible_host=207.154.211.101  ansible_user=root
-virtualbox    ansible_host=192.168.3.11 ansible_user=usuario ansible_password=usuario
-vagrant1       ansible_host=127.0.0.1 ansible_port=2222 ansible_user=ubuntu ansible_ssh_private_key_file="/home/alvaro/Curso Ansible/CursoAnsible2017/1-Primeros pasos/.vagrant/machines/vagrant1/virtualbox/private_key"
-vagrant2       ansible_host=127.0.0.1 ansible_port=2200 ansible_user=ubuntu ansible_ssh_private_key_file="/home/alvaro/Curso Ansible/CursoAnsible2017/1-Primeros pasos/.vagrant/machines/vagrant2/virtualbox/private_key"
+#digitalocean  ansible_host=207.154.211.101  ansible_user=root
+#virtualbox    ansible_host=192.168.3.11 ansible_user=usuario ansible_password=usuario
+vagrant1       ansible_host=127.0.0.1 ansible_port=2222 ansible_user=ubuntu ansible_ssh_private_key_file="/home/alvaro/Software/Software_no_sincronizado/CursoAnsible2017/1-Primeros pasos/.vagrant/machines/vagrant1/virtualbox/private_key"
+vagrant2       ansible_host=127.0.0.1 ansible_port=2200 ansible_user=ubuntu ansible_ssh_private_key_file="/home/alvaro/Software/Software_no_sincronizado/CursoAnsible2017/1-Primeros pasos/.vagrant/machines/vagrant2/virtualbox/private_key"
