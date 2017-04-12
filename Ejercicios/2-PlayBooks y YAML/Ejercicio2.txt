@@ -1,0 +1,20 @@
+Ejercicio 2: convierte el siguiente json a YAML:
+
+{
+  "Domains": [
+    {
+      "hosts": [
+        "host.one.com",
+        "anotherhost.es",
+        "test.anotherhost.es",
+        "local.one.com"
+      ],
+      "lang_site": "cn",
+      "language_routes": "routes_cn.yml",
+      "meta_language": "<META NAME=\"Language\" CONTENT=\" Deutsch\"><meta http-equiv=\"content-language\" content=\"de\"><meta name=\"google-site-verification\" content=\"DonTD0th1satH0m3\" />\n",
+      "script": "{{ angular something }}",
+      "subdomain_taxes": true,
+      "subdomain_montaje": "on"
+    }
+  ]
+}

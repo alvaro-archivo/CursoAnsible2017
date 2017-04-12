@@ -1,0 +1,25 @@
+Ejercicio 1: convierte el siguiente json a YAML:
+
+{
+  "route1": {
+    "path": "/category/{name}",
+    "defaults": {
+      "_controller": "AppBundle:Default:category"
+    },
+    "options": {
+      "utf8": true
+    }
+  },
+  "route2": {
+    "path": "/default/{default}",
+    "defaults": {
+      "_controller": "AppBundle:Default:default"
+    },
+    "requirements": {
+      "default": "item"
+    },
+    "options": {
+      "utf8": true
+    }
+  }
+}
