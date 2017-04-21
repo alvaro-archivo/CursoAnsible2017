@@ -19,6 +19,15 @@
     - name: install python 2
       raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
 
+- name: Upgrade server
+  hosts: all
+  become: true
+
+  tasks:
+    - apt:
+        upgrade: dist
+        update_cache: yes
+
 - name: Create users
   hosts: all
   become: true
@@ -27,23 +36,76 @@
 
     - name: create deploy user v1
       user: name=deploy shell=/bin/bash groups=sudo append=yes
+    #
+    # - name: create deploy user v2
+    #   user: >
+    #     name=deploy
+    #     shell=/bin/bash
+    #     groups=sudo
+    #     append=yes
+    #
+    # - name: create deploy user v3
+    #   user:
+    #     name: deploy
+    #     shell: /bin/bash
+    #     groups: sudo
+    #     append: yes
+    #
+    # - name: create deploy user v4
+    #   user: name=deploy shell=/bin/bash
+    #   args:
+    #     groups: sudo
+    #     append: yes
 
-    - name: create deploy user v2
-      user: >
-        name=deploy
-        shell=/bin/bash
-        groups=sudo
-        append=yes
+- name: Install rbenv, easy
+  hosts: all
+  become: true
 
-    - name: create deploy user v3
-      user:
-        name: deploy
-        shell: /bin/bash
-        groups: sudo
-        append: yes
+  tasks:
+    - name: Update repositories cache and install rbenv
+      apt:
+        name: rbenv
+        state: present
+        update_cache: yes
 
-    - name: create deploy user v4
-      user: name=deploy shell=/bin/bash
-      args:
-        groups: sudo
-        append: yes
+    # echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+    - name: Automatically init rbenv
+      become: yes
+      become_user: deploy
+      lineinfile:
+        # path: ~/.bashrc
+        dest: ~/.bashrc
+        regexp: eval "\$\(rbenv init -\)"
+        line: eval "$(rbenv init -)"
+        insertafter: EOF
+
+# - name: Install rbenv, hard
+#   hosts: all
+#   become: true
+#   become_user: deploy
+#
+#   tasks:
+#
+#       # git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+#       - name: Clone repo
+#         git:
+#           repo: https://github.com/rbenv/rbenv.git
+#           dest:  ~/.rbenv
+#
+#       # echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+#       - name: Export path to rbenv
+#         lineinfile:
+#           # path: ~/.bashrc
+#           dest: ~/.bashrc
+#           regexp: export\W*PATH="\$HOME\/.rbenv\/bin:\$PATH"
+#           line: export PATH="$HOME/.rbenv/bin:$PATH"
+#           insertafter: EOF
+#
+#       # echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+#       - name: Automatically init rbenv
+#         lineinfile:
+#           # path: ~/.bashrc
+#           dest: ~/.bashrc
+#           regexp: eval "\$\(rbenv init -\)"
+#           line: eval "$(rbenv init -)"
+#           insertafter: EOF
