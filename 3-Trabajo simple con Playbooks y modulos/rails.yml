@@ -57,7 +57,7 @@
     #     groups: sudo
     #     append: yes
 
-- name: Install rbenv, easy
+- name: Install rbenv and build utilities
   hosts: all
   become: true
 
@@ -68,10 +68,25 @@
         state: present
         update_cache: yes
 
+    - name: Install build utilities
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - build-essential
+        - libssl-dev
+        - libreadline-dev
+        - zlib1g-dev
+
+- name: Configure rbenv
+  hosts: all
+  become: true
+  become_user: deploy
+
+  tasks:
+
     # echo 'eval "$(rbenv init -)"' >> ~/.bashrc
     - name: Automatically init rbenv
-      become: yes
-      become_user: deploy
       lineinfile:
         # path: ~/.bashrc
         dest: ~/.bashrc
@@ -79,33 +94,24 @@
         line: eval "$(rbenv init -)"
         insertafter: EOF
 
-# - name: Install rbenv, hard
-#   hosts: all
-#   become: true
-#   become_user: deploy
-#
-#   tasks:
-#
-#       # git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-#       - name: Clone repo
-#         git:
-#           repo: https://github.com/rbenv/rbenv.git
-#           dest:  ~/.rbenv
-#
-#       # echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-#       - name: Export path to rbenv
-#         lineinfile:
-#           # path: ~/.bashrc
-#           dest: ~/.bashrc
-#           regexp: export\W*PATH="\$HOME\/.rbenv\/bin:\$PATH"
-#           line: export PATH="$HOME/.rbenv/bin:$PATH"
-#           insertafter: EOF
-#
-#       # echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-#       - name: Automatically init rbenv
-#         lineinfile:
-#           # path: ~/.bashrc
-#           dest: ~/.bashrc
-#           regexp: eval "\$\(rbenv init -\)"
-#           line: eval "$(rbenv init -)"
-#           insertafter: EOF
+    # git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins
+    - name: Install rbenv ruby-build plugin
+      git:
+        repo: git://github.com/sstephenson/ruby-build.git
+        dest: ~/.rbenv/plugins/ruby-build
+
+    # rbenv install 2.4.0
+    - name: Install ruby 2.4.0
+    # - name: This command will change the working directory to somedir/ and will only run when /path/to/database doesn't exist.
+      command: /usr/bin/rbenv install 2.4.0
+      # args:
+      #   creates: /path/to/database
+
+    # rbenv global 2.4.0
+    # - name: Make 2.4.0 global
+
+    # gem install bundler
+    # - name: Install bundler
+
+    # rbenv rehash
+    # - name: Rehash rbenv
