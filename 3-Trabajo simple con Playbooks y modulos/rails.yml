@@ -102,16 +102,142 @@
 
     # rbenv install 2.4.0
     - name: Install ruby 2.4.0
-    # - name: This command will change the working directory to somedir/ and will only run when /path/to/database doesn't exist.
       command: /usr/bin/rbenv install 2.4.0
-      # args:
-      #   creates: /path/to/database
+      args:
+        creates: ~/.rbenv/versions/2.4.0
 
     # rbenv global 2.4.0
-    # - name: Make 2.4.0 global
+    - name: Make 2.4.0 global
+      command: /usr/bin/rbenv global 2.4.0
 
     # gem install bundler
-    # - name: Install bundler
+    - name: Install bundler
+      gem:
+        name: rake
+        state: latest
 
     # rbenv rehash
-    # - name: Rehash rbenv
+    - name: Rehash rbenv
+      command: /usr/bin/rbenv rehash
+
+
+- name: Install nginx and passenger
+  hosts: all
+  become: true
+  become_user: root
+  tags: nginx
+
+  tasks:
+
+    - name: install apt-key docker
+      apt_key: >
+        keyserver="hkp://pgp.mit.edu:80"
+        id="58118E89F3A912897C070ADBF76221572C52609D"
+
+    - name: Add key
+      apt_key:
+        id: 561F9B9CAC40B2F7
+        keyserver: "hkp://keyserver.ubuntu.com:80"
+        state: present
+
+    - name: Add repository
+      apt_repository:
+        repo: deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main
+        state: present
+
+    - name: Install dependencies
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+
+    - name: Install nginx + passenger
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - nginx-extras
+        - passenger
+
+- name: Configure nginx and passenger
+  hosts: all
+  become: true
+  become_user: root
+
+  tasks:
+
+    - name: Include Passenger configuration in nginx
+      lineinfile:
+        dest: /etc/nginx/nginx.conf
+        regexp: include \/etc\/nginx\/passenger\.conf;
+        line: include /etc/nginx/passenger.conf;
+        insertafter: EOF
+
+    - name: Point Passenger to the version of Ruby that we're using
+      lineinfile:
+        dest: /etc/nginx/passenger.conf
+        regexp: passenger_ruby
+        line: passenger_ruby /home/deploy/.rbenv/shims/ruby;
+        insertafter: EOF
+
+    - name: Restart nginx
+      service:
+          name: nginx
+          state: restarted
+
+# - name: Install mysql server
+#   hosts: all
+#   become: true
+#   become_user: root
+#
+#   tasks:
+#
+#     - name: Set MySQL root password before installing
+#       debconf: name='mysql-server' question='mysql-server/root_password' value='1234' vtype='password'
+#
+#     - name: Confirm MySQL root password before installing
+#       debconf: name='mysql-server' question='mysql-server/root_password_again' value='1234' vtype='password'
+#
+#     - name: Install MySQL
+#       apt:
+#         name: "{{ item }}"
+#       with_items:
+#         - python-mysqldb
+#         - mysql-server
+#
+#     - name: Create database
+#       mysql_db:
+#         name: TO-DO
+#         state: present
+#
+#     - name: Create database user
+#       mysql_user:
+#         name: TO-DO
+#         password: 1234
+#         priv: 'TO-DO.*:ALL'
+#         state: present
+
+- name: Install application
+  hosts: all
+  become: true
+  become_user: root
+
+  tasks:
+
+    - name: Copy host configuration file to nginx
+      copy:
+        src: app.conf
+        dest: /etc/nginx/sites-available/default.conf
+        owner: root
+        group: root
+        mode: "u=rw,g=r,o=r"
+
+    - name: Restart nginx
+      service:
+          name: nginx
+          state: restarted
+
+
+    # - name: Clone app repository
