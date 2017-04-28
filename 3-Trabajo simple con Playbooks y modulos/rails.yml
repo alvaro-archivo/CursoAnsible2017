@@ -277,11 +277,22 @@
         dest: "~/DuckRecognizer"
     # https://github.com/AlvaroMaceda/DuckRecognizer.git
 
-    #  - name: Install gems with bundler
-    #    bundler:
-    #      state: present
-    #     #  executable: ~/.rvm/gems/2.1.5/bin/bundle
-    #      chdir: ~/DuckRecognizer
+    - name: Install dependencies for gems
+      become_user: root
+      apt:
+        name: "{{ item }}"
+      with_items:
+        - libmysqlclient-dev
+        - libsqlite3-dev
+        # - ¿sqlite3?
+
+# sudo apt-get install nodejs -> uglifier ¿¿?
+
+    - name: Install gems with bundler
+      bundler:
+        state: present
+        executable: ~/.rbenv/shims/bundle #~/.rvm/gems/2.1.5/bin/bundle
+        chdir: /home/deploy/DuckRecognizer
     #      gem_path:  # Relative to chdir
     #      bundle install --deployment --binstubs
 
