@@ -254,6 +254,13 @@
   become: true
   become_user: deploy
 
+  vars:
+    db_user: duckrecognizer
+    db_password: duckrecognizer
+
+  tags:
+    - app
+
   tasks:
 
     - name: Copy host configuration file to nginx
@@ -275,7 +282,6 @@
       git:
         repo: 'https://github.com/AlvaroMaceda/DuckRecognizer.git'
         dest: "~/DuckRecognizer"
-    # https://github.com/AlvaroMaceda/DuckRecognizer.git
 
     - name: Install dependencies for gems
       become_user: root
@@ -286,19 +292,18 @@
         - libsqlite3-dev
         # - ¿sqlite3?
 
-# sudo apt-get install nodejs -> uglifier ¿¿?
-
     - name: Install gems with bundler
       bundler:
         state: present
-        executable: ~/.rbenv/shims/bundle #~/.rvm/gems/2.1.5/bin/bundle
+        executable: ~/.rbenv/shims/bundle
         chdir: /home/deploy/DuckRecognizer
-    #      gem_path:  # Relative to chdir
-    #      bundle install --deployment --binstubs
 
+    - name: Create secrets file
+      template:
+        src: secrets.yml.j2
+        dest: /home/deploy/DuckRecognizer/config/secrets.yml
 
-    # - name: Create configuration file
-
-
-    # - name: copy .my.cnf file with root password credentials
-    #   template: src=my.cnf dest=/root/.my.cnf owner=root mode=0600
+    - name: Run migration
+      shell: ~/.rbenv/shims/bundle exec rake db:migrate
+      args:
+        chdir: /home/deploy/DuckRecognizer
