@@ -134,7 +134,7 @@
 
       # rbenv global 2.4.0
       - name: Make 2.4.0 global
-        command: rbenv global 2.4.0
+        command: rbenv global {{ ruby_version }}
 
       # gem install bundler
       - name: Install bundler
@@ -282,7 +282,7 @@
         dest: "~/DuckRecognizer"
 
     - name: Copy nginx host configuration
-      copy:
+      template:
         src: app.conf
         dest: /etc/nginx/sites-enabled/default
         owner: root

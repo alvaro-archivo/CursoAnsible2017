@@ -1,0 +1,7 @@
+---
+  v1: soy la variable1
+  v2:
+    - soy
+    - una
+    - lista
+    - [1,2,3]

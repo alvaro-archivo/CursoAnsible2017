@@ -1,0 +1,11 @@
+---
+
+- name: Mensaje
+  hosts: app
+  gather_facts: False
+  become: true
+  vars_files:
+    - vault.yml
+
+  tasks:
+    - debug: msg="password={{ password.secreto }}"
