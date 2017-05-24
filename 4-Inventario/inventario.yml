@@ -21,10 +21,42 @@
 
 - name: Do something in app hosts
   hosts: app
-  become: true
-  tags: msg
-  
+  gather_facts: no
+  tags: msg1
+
   tasks:
 
     - name: Show debug info
       debug: msg=Hola
+
+- name: Vars specification
+  hosts: db
+  gather_facts: no
+  tags: msg2
+  vars:
+    v1:
+      - Hola
+      - Caracola
+  vars_files:
+     - vars.yml
+
+  tasks:
+
+    - name: Show v1
+      debug: msg=v1:{{ v1 }}
+
+    - name: Show v2
+      debug: msg=v2:{{ v2 }}
+
+
+
+
+
+
+
+
+
+
+
+
+#
