@@ -1,0 +1,4 @@
+---
+  mysql:
+    root_password: abcd
+    user_password: duckrecognizer
