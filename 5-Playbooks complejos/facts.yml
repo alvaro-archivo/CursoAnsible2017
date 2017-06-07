@@ -1,0 +1,64 @@
+---
+
+- name: Play to tests facts
+  hosts: all
+  gather_facts: yes
+
+  tasks:
+
+    - name: Show facts
+      debug: var=ansible_all_ipv6_addresses
+
+    - name: Show local facts
+      debug: var=ansible_local
+
+
+- name: Play to test set_fact
+  hosts: all
+  gather_facts: no
+
+  tasks:
+
+    - name: Set a fact
+      set_fact: proveedor="digital ocean"
+
+- name: Play to test registering
+  hosts: all
+  gather_facts: no
+
+  tasks:
+
+    - name: Call a module
+      find:
+        paths: "/var/log"
+        recurse: no
+      register: module_result
+
+    - name: Show module result
+      debug: var=module_result
+
+    - name: Execute a command
+      command: ls -la
+      register: command_result
+      changed_when: false
+
+    - name: Show command result
+      debug: var=command_result
+
+    - name: Execute a failing command
+      command: ls -la /unexistent
+      register: command_result
+      failed_when: false
+      changed_when: false
+
+    - name: Show command result
+      debug: var=command_result
+
+- name: Play to test set_fact worked
+  hosts: all
+  gather_facts: no
+
+  tasks:
+
+    - name: Show module result
+      debug: var=proveedor

@@ -1,0 +1,30 @@
+---
+
+- name: Play to tests handlers
+  hosts: all
+  gather_facts: no
+  become: yes
+
+  tasks:
+
+    - name: Delete files to test again
+      file:
+        dest: '/root/dummyfile{{ item }}'
+        state: absent
+      with_sequence: count=2
+
+    - name: Create an apache vhost
+      copy: src=inventory dest=/root/dummyfile1
+      notify: restart apache
+
+    - name: Install an apache module
+      copy: src=inventory dest=/root/dummyfile2
+      notify: restart apache
+
+    # - name: Restart apache
+    #   debug: msg="Restarting apache"
+
+
+  handlers:
+    - name: restart apache
+      debug: msg="Restarting apache..."

@@ -1,14 +1,5 @@
 ---
 
-- name: Pruebas
-  hosts: all
-  tags: debug
-
-  tasks:
-
-    - name: debug
-      debug: msg={{ database.user }}
-
 - name: Workaround for relative private keys
   hosts: all
   gather_facts: no
