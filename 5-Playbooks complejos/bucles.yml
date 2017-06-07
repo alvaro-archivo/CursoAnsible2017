@@ -1,0 +1,53 @@
+---
+
+- name: Testing simple bucles
+  hosts: all
+  gather_facts: no
+  tags: bucles1
+
+  vars:
+    usuarios:
+      - nombre: Antonio
+        apellidos: Martinez
+      - nombre: Pepe
+        apellidos: Sanchez
+
+  tasks:
+    - name: Print a list of things
+      debug: msg="Hola, {{ item.nombre }} {{ item.apellidos }}"
+      with_items:
+          - nombre: 'Sancho'
+            apellidos: 'Panza'
+          - { nombre: 'Alonso', apellidos: 'Quijano' }
+      # with_items: usuarios
+
+
+
+- name: Testing nested bucles
+  hosts: all
+  gather_facts: no
+  tags: buclesn
+
+
+  tasks:
+    - name: Print a list of things
+      debug: msg="¡Ataque, {{ item.0 }} {{ item.1 }}!"
+      with_nested:
+        - [ Rojo, Oro ]
+        - [ 1,2,3 ]
+
+
+
+- name: Testing sequences
+  hosts: all
+  gather_facts: no
+  tags: bucless
+
+  vars:
+    db_user: duckrecognizer
+    db_password: duckrecognizer
+
+  tasks:
+    - name: Print a list of things
+      debug: msg="Creando usuario {{ item }}"
+      with_sequence: start=0 end=5 format=user%02d
