@@ -270,6 +270,7 @@
       git:
         repo: 'https://github.com/AlvaroMaceda/DuckRecognizer.git'
         dest: "~/DuckRecognizer"
+        force: yes # Because if we run the playbook again, we have had made changes in configuration files
 
     - name: Install dependencies for gems
       become_user: root
