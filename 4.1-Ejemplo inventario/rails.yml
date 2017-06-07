@@ -242,7 +242,7 @@
         state: present
 
 - name: Install application
-  hosts: all
+  hosts: app
   become: true
   become_user: "{{ users.deploy.username }}"
 
@@ -254,7 +254,7 @@
     - name: Copy host configuration file to nginx
       become_user: root
       template:
-        src: app.conf
+        src: app.conf.j2
         dest: /etc/nginx/sites-available/default
         owner: root
         group: root
