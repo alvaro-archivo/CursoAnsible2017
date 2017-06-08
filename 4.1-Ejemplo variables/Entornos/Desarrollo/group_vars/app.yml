@@ -1,0 +1,12 @@
+---
+
+  deploy_user:
+    username: deploy
+    shell: /bin/bash
+
+  ruby:
+    version: 2.4.0
+
+  app:
+    repository: https://github.com/AlvaroMaceda/DuckRecognizer.git
+    environment: development
