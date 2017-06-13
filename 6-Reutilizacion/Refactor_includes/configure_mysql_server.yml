@@ -1,0 +1,23 @@
+---
+  
+  - name: Configure mysql server
+    hosts: db
+    become: true
+    become_user: root
+
+    tags:
+        - mysql
+
+    tasks:
+
+      - name: Create database
+        mysql_db:
+          name: "{{ database.name }}"
+          state: present
+
+      - name: Create database user
+        mysql_user:
+          name: "{{ database.user }}"
+          password: "{{ mysql.user_password }}"
+          priv: '{{ database.name }}.*:ALL'
+          state: present

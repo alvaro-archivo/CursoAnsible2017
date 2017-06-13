@@ -1,0 +1,35 @@
+---
+  
+  - name: Install mysql server
+    hosts: db
+    become: true
+    become_user: root
+
+    tags:
+        - mysql
+
+    tasks:
+
+      - name: Set MySQL root password before installing
+        debconf: name='mysql-server' question='mysql-server/root_password' value='{{ mysql.root_password }}' vtype='password'
+
+      - name: Confirm MySQL root password before installing
+        debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{ mysql.root_password }}' vtype='password'
+
+      - name: Install MySQL and mysql-python
+        apt:
+          name: "{{ item }}"
+        with_items:
+          - mysql-server
+          - python-mysqldb
+
+      - name: Start the MySQL service
+        action: service name=mysql state=started
+
+      - name: Copy host configuration file to nginx
+        template:
+          src: my.cnf.j2
+          dest: /root/.my.cnf
+          owner: root
+          group: root
+          mode: 600

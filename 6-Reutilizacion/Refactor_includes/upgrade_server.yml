@@ -1,0 +1,10 @@
+---
+
+- name: Upgrade server
+  hosts: all
+  become: true
+
+  tasks:
+    - apt:
+        upgrade: dist
+        update_cache: yes

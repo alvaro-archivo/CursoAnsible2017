@@ -1,0 +1,14 @@
+---
+
+  - name: Create users
+    hosts: app
+    become: true
+
+    tasks:
+
+      - name: create deploy user v1
+        user:
+          name: "{{ users.deploy.username }}"
+          shell: "{{ users.deploy.shell }}"
+          groups: "{{ users.deploy.groups }}"
+          append: yes
