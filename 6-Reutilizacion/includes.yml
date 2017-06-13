@@ -1,0 +1,24 @@
+---
+
+- include: included_play.yml
+
+- name: Example of play include
+  hosts: all
+  gather_facts: no
+
+  tasks:
+
+    - name: This task is not included
+      debug: msg="I'm not included"
+
+    - include: included_tasks.yml
+      vars:
+        message: I'm an included task
+        name: baby
+
+    - include: included_tasks.yml message={{ item.message}} name={{ item.name }}
+      with_items:
+        - message: I'm an included message2
+          name: baby2
+        - message: I'm an included message3
+          name: baby3

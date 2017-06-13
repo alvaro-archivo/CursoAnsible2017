@@ -1,0 +1,7 @@
+---
+
+  - name: A task included
+    debug: msg="{{ message }}"
+
+  - name: Another task included
+    debug: msg="Hello, {{ name }}"

@@ -1,0 +1,10 @@
+---
+
+- name: Example of play include
+  hosts: all
+  gather_facts: no
+
+  tasks:
+
+    - name: Show something
+      debug: msg="Hello, Dolly"
