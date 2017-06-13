@@ -1,0 +1,29 @@
+---
+
+- name: Bucles simples
+  hosts: all
+  become: no
+  gather_facts: no
+  tags:
+    - bucle_simple
+
+  vars:
+    usuarios:
+      - usuario:
+          nombre: Sancho
+          apellidos: panza
+        aplicaciones:
+          - Zurron
+          - Burro
+      - usuario:
+          nombre: Alonso
+          apellidos: Quijano
+        aplicaciones:
+          - Lanza
+          - Caballo
+
+  tasks:
+
+    - name: Ejemplo bucle
+      debug: msg="Hola que tal, {{ item.usuario.nombre }}, aplicaciones {{ item.aplicaciones }}"
+      with_items: usuarios

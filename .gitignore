@@ -1,3 +1,4 @@
 .vagrant
 *.log
 *.pyc
+vault_pass.txt

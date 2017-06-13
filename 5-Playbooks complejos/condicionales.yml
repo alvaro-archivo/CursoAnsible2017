@@ -1,0 +1,33 @@
+---
+
+- name: Condicionales
+  hosts: all
+  become: no
+  gather_facts: yes
+
+  vars:
+    produccion: yes
+
+  tasks:
+
+    - name: Condicionales 1
+      debug: msg="Ojo, esto es vagrant1"
+      when: produccion is undefined
+
+    - name: Register something
+      command: "ls -la /dirquenoexiste"
+      register: var_command
+      failed_when: false
+
+    - name: Condicionales y Bucles
+      debug: msg="Número {{ item }}"
+      # with_sequence: count=4
+      with_items: [1,2,3,4,5]
+      when: item > 2
+
+    # - name: Succeeded and failed
+    #   debug: var=var_command
+    #
+    # - name: Succeeded and failed
+    #   debug: msg="Esto ha fallado/ido bien"
+    #   when: var_command.rc | success

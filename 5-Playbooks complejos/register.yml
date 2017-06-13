@@ -1,0 +1,16 @@
+---
+
+  - name: Bucles simples
+    hosts: vagrant1
+    become: no
+    gather_facts: no
+
+    tasks:
+
+      - name: Register something
+        command: "ls -la /dirquenoexiste"
+        register: var_command
+        failed_when: false
+
+      - name: Show registered value
+        debug: var=var_command

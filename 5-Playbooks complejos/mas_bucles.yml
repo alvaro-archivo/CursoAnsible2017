@@ -1,0 +1,19 @@
+---
+
+- name: Bucles simples
+  hosts: all
+  become: no
+  gather_facts: no
+
+  tasks:
+
+    # - name: Bucle anidado
+    #   debug: msg="Al ataque, {{ item.0 }} {{ item.1 }}"
+    #   with_nested:
+    #     - [ Rojo, Oro]
+    #     - [ 1, 2, 3]
+
+
+    - name: Bucle sequencia
+      debug: msg="Creando el usuario {{ item }}"
+      with_sequence: start=0 end=30 format=user%02d

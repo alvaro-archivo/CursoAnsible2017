@@ -1,0 +1,21 @@
+---
+
+- name: Handlers
+  hosts: vagrant1
+  become: yes
+  gather_facts: yes
+
+  tasks:
+
+    - name: Crear un vhost apache
+      copy: src=inventory dest=/root/file
+      notify: Restart apache
+
+    - name: Crear otro vhost apache
+      copy: src=inventory dest=/root/file2
+      notify: Restart apache
+      
+  handlers:
+
+    - name: Restart apache
+      debug: msg="Restarting apache"

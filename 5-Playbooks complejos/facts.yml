@@ -1,0 +1,41 @@
+---
+
+- name: Facts 1
+  hosts: all
+  become: no
+  gather_facts: no
+
+  tasks:
+
+    - name: Show facts
+      debug: var=ansible_nodename
+
+    - name: Set a fact
+      set_fact: aplicacion="DuckRecognizer"
+
+
+- name: Facts 2
+  hosts: all
+  become: no
+  gather_facts: no
+
+  tasks:
+
+    - name: Show custom facts
+      debug: msg="El nombre de la aplicación es {{ aplicacion }}"
+
+
+- name: Facts 3
+  hosts: all
+  become: no
+  gather_facts: yes
+  tags:
+    - custom
+
+  tasks:
+
+    - name: Show custom facts
+      debug: msg="{{ ansible_local.json.custom_facts }}"
+
+    - name: Show custom facts
+      debug: msg="{{ ansible_local.exe.custom_facts }}"
