@@ -1,18 +1,18 @@
 ---
 
   mysql:
-    root_password: abcd
+    root_password: acomplexandrandomstring
 
     databases:
-      - DuckRecognizer
-      - MrPotato
+      - database1
+      - anotherdatabase
 
     users:
 
-      - name: duckrecognizer
-        password: duckrecognizer
-        privs: 'DuckRecognizer.*:ALL'
+      - name: an_user
+        password: something_in_a_vault
+        privs: 'database1.*:ALL'
 
-      - name: potato
-        password: potato
-        privs: 'MrPotato.*:ALL'
+      - name: the_other
+        password: something_in_a_vault
+        privs: 'database1.*:ALL'

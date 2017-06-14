@@ -1,8 +1,5 @@
 ---
 
-  - name: Debug info
-    debug: var=mysql
-
   - name: Create databases
     mysql_db:
       name: "{{ item }}"

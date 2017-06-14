@@ -4,3 +4,13 @@
     name: DuckRecognizer
     user: duckrecognizer
     host: localhost
+
+  mysql:
+    root_password: "{{ secrets.root_password }}"
+
+    databases:
+      - "{{ database.name }}"
+    users:
+      - name: "{{ database.user }}"
+        password: "{{ secrets.user_password }}"
+        privs: '{{ database.name }}.*:ALL'

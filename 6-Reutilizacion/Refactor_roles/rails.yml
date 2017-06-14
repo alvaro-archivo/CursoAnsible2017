@@ -6,7 +6,7 @@
 
 - name: Create users
   hosts: app
-  become: true
+  become: yes
 
   tasks:
 
@@ -22,8 +22,6 @@
   hosts: app
   become: yes
 
-  tags: app
-
   roles:
     - role: rbenv
       rbenv:
@@ -37,13 +35,9 @@
 - name: Configure db server
   hosts: db
   become: yes
-
   tags: db
-
   roles:
     - mysql
-
-
 
 - name: Install application
   hosts: app
@@ -88,7 +82,7 @@
     - name: Install gems with bundler
       bundler:
         state: present
-        executable: ~/.rbenv/shims/bundle
+        executable: /home/{{ users.deploy.username }}/.rbenv/shims/bundle
         chdir: /home/{{ users.deploy.username }}/DuckRecognizer
 
     - name: Create secrets file
