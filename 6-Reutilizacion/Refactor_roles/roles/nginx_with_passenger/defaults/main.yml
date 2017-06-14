@@ -1,0 +1,4 @@
+---
+
+  passenger:
+    ruby_path: /usr/bin/ruby

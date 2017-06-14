@@ -1,0 +1,18 @@
+---
+
+  mysql:
+    root_password: abcd
+
+    databases:
+      - DuckRecognizer
+      - MrPotato
+
+    users:
+
+      - name: duckrecognizer
+        password: duckrecognizer
+        privs: 'DuckRecognizer.*:ALL'
+
+      - name: potato
+        password: potato
+        privs: 'MrPotato.*:ALL'

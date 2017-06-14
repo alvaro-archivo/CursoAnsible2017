@@ -1,0 +1,18 @@
+---
+
+  - name: Debug info
+    debug: var=mysql
+
+  - name: Create databases
+    mysql_db:
+      name: "{{ item }}"
+      state: present
+    with_items: mysql.databases
+
+  - name: Configure database users
+    mysql_user:
+      name: "{{ item.name }}"
+      password: "{{ item.password }}"
+      priv: "{{ item.privs }}"
+      state: present
+    with_items: mysql.users

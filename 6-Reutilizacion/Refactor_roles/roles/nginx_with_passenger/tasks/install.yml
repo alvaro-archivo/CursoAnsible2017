@@ -1,0 +1,33 @@
+---
+  
+  - name: install apt-key docker
+    apt_key: >
+      keyserver="hkp://pgp.mit.edu:80"
+      id="58118E89F3A912897C070ADBF76221572C52609D"
+
+  - name: Add key
+    apt_key:
+      id: 561F9B9CAC40B2F7
+      keyserver: "hkp://keyserver.ubuntu.com:80"
+      state: present
+
+  - name: Add repository
+    apt_repository:
+      repo: deb https://oss-binaries.phusionpassenger.com/apt/passenger xenial main
+      state: present
+
+  - name: Install dependencies
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - apt-transport-https
+      - ca-certificates
+
+  - name: Install nginx + passenger
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - nginx-extras
+      - passenger

@@ -11,3 +11,7 @@
 
   rails:
     environment: development
+
+  # rbenv:
+  #   ruby_version: "{{ ruby.version }}"
+  #   deploy_user: "{{ users.deploy.username }}"

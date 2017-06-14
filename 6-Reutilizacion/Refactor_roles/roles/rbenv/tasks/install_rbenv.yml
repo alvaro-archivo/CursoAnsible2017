@@ -1,0 +1,17 @@
+---
+
+  - name: Update repositories cache and install rbenv
+    apt:
+      name: rbenv
+      state: present
+      update_cache: yes
+
+  - name: Install build utilities
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - libssl-dev
+      - libreadline-dev
+      - zlib1g-dev

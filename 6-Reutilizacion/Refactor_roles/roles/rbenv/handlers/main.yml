@@ -1,0 +1,5 @@
+---
+  
+  # rbenv rehash
+  - name: Rehash rbenv
+    command: /usr/bin/rbenv rehash

@@ -1,0 +1,4 @@
+---
+
+  - name: Start mySQL
+    action: service name=mysql state=started
