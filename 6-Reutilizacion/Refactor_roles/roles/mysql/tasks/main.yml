@@ -1,0 +1,5 @@
+---
+
+  - include: install_mysql.yml
+
+  - include: configure_mysql.yml

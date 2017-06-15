@@ -1,0 +1,5 @@
+---
+
+  - include: install_nginx_and_passenger.yml
+
+  - include: configure_nginx_and_passenger.yml

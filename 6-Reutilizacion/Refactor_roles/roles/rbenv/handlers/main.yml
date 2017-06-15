@@ -1,0 +1,5 @@
+---
+
+# rbenv rehash
+- name: Rehash bundler
+  command: rbenv rehash

@@ -1,0 +1,138 @@
+---
+
+- include: prepare_vagrant_servers_to_work_with_ansible.yml
+
+- include: upgrade_packages_and_set_hostname.yml
+
+- name: Create deploy users
+  hosts: app
+  become: yes
+  tags:
+    - general
+
+  tasks:
+
+    - name: Create user deploy v3
+      user:
+        name: "{{ deploy_user.username }}"
+        shell: "{{ deploy_user.shell }}"
+        groups: sudo
+
+- name: Configure App server
+  hosts: app
+  become: yes
+
+  roles:
+    - role: rbenv
+      rbenv:
+        ruby_version: "{{ ruby.version }}"
+        username: "{{ deploy_user.username }}"
+    - role: nginx_and_passenger
+      passenger:
+        ruby_path: /home/{{ deploy_user.username }}/.rbenv/shims/ruby
+
+
+- name: Configure database server
+  hosts: db
+  become: yes
+  become_user: root
+
+  roles:
+    - role: mysql
+      mysql:
+        root_password: "{{ mysql.root_password }}"
+
+        databases:
+          - name: "{{ database.name }}"
+
+        users:
+          - name: "{{ database.user }}"
+            password: "{{ database.user }}"
+            privs: "{{ database.name }}.*:ALL"
+
+- name: Install application
+  hosts: app
+  become: yes
+  become_user: root
+  tags:
+    - app
+
+  tasks:
+
+    - name: Clone app repository
+      become_user: "{{ deploy_user.username }}"
+      git:
+        repo: "{{ app.repository }}"
+        dest: "~/DuckRecognizer"
+
+    - name: Copy nginx host configuration
+      template:
+        src: app.conf
+        dest: /etc/nginx/sites-enabled/default
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+
+    -  name: Restart nginx
+       service:
+        name: nginx
+        state: restarted
+
+- name: Configure application
+  hosts: app
+  become: yes
+  become_user: "{{ deploy_user.username }}"
+  tags:
+    - conf
+
+  tasks:
+
+    - name: Install required packages for gems
+      become_user: root
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - libsqlite3-dev
+
+    - name: Install gems with bundler
+      bundler:
+        state: present
+        executable: ~/.rbenv/shims/bundler
+        chdir: /home/{{ deploy_user.username }}/DuckRecognizer
+
+    - name: Create secrets file
+      template:
+        src: secrets.yml.j2
+        dest: ~/DuckRecognizer/config/secrets.yml
+        owner: "{{ deploy_user.username }}"
+        group: "{{ deploy_user.username }}"
+        mode: u=rw,g=,o=
+
+    - name: Copy mysql automatic login file
+      copy:
+        src: my.cnf
+        dest: ~/.my.cnf
+        owner: "{{ deploy_user.username }}"
+        group: "{{ deploy_user.username }}"
+        mode: u=rw,g=,o=
+
+    - name: Run migrations
+      shell: /home/{{ deploy_user.username }}/.rbenv/shims/bundle exec rake db:migrate
+      args:
+        chdir: /home/{{ deploy_user.username }}/DuckRecognizer
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Lock

@@ -1,0 +1,16 @@
+---
+
+  mysql:
+    root_password: something_in_a_vault
+
+    databases:
+      - name: ASampleDatabase
+      - name: AnotherDatabase
+
+    users:
+      - name: user1
+        password: something_in_a_vault
+        privs: ASampleDatabase.*:ALL
+      - name: anotheruser
+        password: something_in_a_vault
+        privs: AnotherDatabase.*:ALL

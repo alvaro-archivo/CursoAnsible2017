@@ -1,0 +1,17 @@
+---
+
+- name: Include passenger configuration in nginx
+  lineinfile:
+      dest: /etc/nginx/nginx.conf
+      regexp: include \/etc\/nginx\/passenger\.conf;
+      line: include /etc/nginx/passenger.conf;
+      insertafter: EOF
+  notify: Restart nginx
+
+- name: Set corrent ruby version in passenger
+  lineinfile:
+      dest: /etc/nginx/passenger.conf
+      regexp: passenger_ruby .*
+      line: passenger_ruby {{ passenger.ruby_path }};
+      insertafter: EOF
+   notify: Restart nginx
