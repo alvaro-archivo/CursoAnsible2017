@@ -1,0 +1,7 @@
+---
+
+- name: Say hello
+  debug: msg="Hello {{ name }}"
+
+- name: Say goodbye
+  debug: msg="Goodbye {{ goodbye }}"

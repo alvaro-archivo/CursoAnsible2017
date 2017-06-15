@@ -1,0 +1,14 @@
+---
+  
+# PLAY
+- name: Example play 2
+  hosts: all
+  gather_facts: no
+
+  tasks:
+
+    - name: Show a message
+      debug: msg="Otro Mensaje 1"
+
+    - name: Show a message
+      debug: msg="Otro Mensaje 2"

@@ -1,0 +1,35 @@
+---
+
+# PLAY
+- name: Example play
+  hosts: all
+  gather_facts: no
+
+  tasks:
+
+    # TASKS
+    # - name: Show a message
+    #   debug: msg="Mensaje 1"
+
+    # - include: say_hello.yml
+    #   vars:
+    #     name: Peter
+    #     goodbye: See you soon
+
+    - include: say_hello.yml name={{ item.potato }} goodbye={{ item.onion }}
+      with_items:
+        - potato: Peter
+          onion: see you soon
+        - potato: Lucas
+          onion: see you later
+
+# - include: included_play.yml
+
+
+
+
+
+
+
+
+#
