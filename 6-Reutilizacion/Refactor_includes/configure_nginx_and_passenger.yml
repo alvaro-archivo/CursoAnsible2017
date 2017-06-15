@@ -1,0 +1,30 @@
+---
+  
+- name: Configure nginx and passenger
+  hosts: app
+  become: yes
+  become_user: root
+  tags:
+    - nginx
+    - passenger
+
+  tasks:
+
+      - name: Include passenger configuration in nginx
+        lineinfile:
+            dest: /etc/nginx/nginx.conf
+            regexp: include \/etc\/nginx\/passenger\.conf;
+            line: include /etc/nginx/passenger.conf;
+            insertafter: EOF
+
+      - name: Set corrent ruby version in passenger
+        lineinfile:
+            dest: /etc/nginx/passenger.conf
+            regexp: passenger_ruby .*
+            line: passenger_ruby /home/deploy/.rbenv/shims/ruby;
+            insertafter: EOF
+
+      -  name: Restart nginx
+         service:
+          name: nginx
+          state: restarted

@@ -1,0 +1,34 @@
+---
+
+- name: Install rbenv
+  hosts: app
+  become: yes
+  tags:
+    - rbenv
+
+  tasks:
+
+    - name: Install rbenv
+      apt:
+        name: rbenv
+        state: present
+        update_cache: yes
+
+    - name: Install packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - build-essential
+        - libssl-dev
+        - libreadline-dev
+
+    # - name: Install depences
+    #   apt: name=build-essential state=present update_cache=yes
+    #
+    # - name: Install depences
+    #   apt: name=libssl-dev state=present update_cache=yes
+    #
+    # - name: Install depences
+    #   apt: name=libreadline-dev state=present update_cache=yes

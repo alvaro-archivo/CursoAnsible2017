@@ -1,5 +1,0 @@
----
-
-  mysql:
-    root_password: 1234
-    user_password: duckuser

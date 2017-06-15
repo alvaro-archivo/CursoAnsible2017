@@ -1,0 +1,49 @@
+---
+
+- name: Configure rbenv
+  hosts: app
+  become: yes
+  become_user: "{{ deploy_user.username }}"
+  tags:
+    - rbenv
+
+  tasks:
+
+      # echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+      - name: rbenv initialization
+        # shell: "echo 'eval \"$(rbenv init -)\"' >> ~/.bashrc"
+        lineinfile:
+            dest: ~/.bashrc
+            # identificar la línea
+            regexp: eval "\$\(rbenv init -\)"
+            # decir el contenido de esa línea
+            line: eval "$(rbenv init -)"
+            # dónde vamos a poner la lína
+            insertafter: EOF
+
+      # git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+      - name: Install ruby-build plugins
+        git:
+          repo: https://github.com/rbenv/ruby-build.git
+          dest: "~/.rbenv/plugins/ruby-build"
+
+      # rbenv install 2.4.0
+      - name: Install ruby
+        command: rbenv install {{ ruby.version }}
+        args:
+          creates: "~/.rbenv/versions/{{ ruby.version }}"
+
+      # rbenv global 2.4.0
+      - name: Make ruby version global
+        command: rbenv global {{ ruby.version }}
+
+      # gem install bundler
+      - name: Install bundler
+        shell:  eval "$(/usr/bin/rbenv init -)"  && gem install bundler
+        args:
+          executable: /bin/bash
+          creates: ~/.rbenv/versions/{{ ruby.version }}/bin/bundler
+
+      # rbenv rehash
+      - name: Rehash bundler
+        command: rbenv rehash

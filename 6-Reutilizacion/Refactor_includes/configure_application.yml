@@ -1,0 +1,46 @@
+---
+  
+- name: Configure application
+  hosts: app
+  become: yes
+  become_user: "{{ deploy_user.username }}"
+  tags:
+    - conf
+
+  tasks:
+
+    - name: Install required packages for gems
+      become_user: root
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - libsqlite3-dev
+
+    - name: Install gems with bundler
+      bundler:
+        state: present
+        executable: ~/.rbenv/shims/bundler
+        chdir: /home/{{ deploy_user.username }}/DuckRecognizer
+
+    - name: Create secrets file
+      template:
+        src: secrets.yml.j2
+        dest: ~/DuckRecognizer/config/secrets.yml
+        owner: "{{ deploy_user.username }}"
+        group: "{{ deploy_user.username }}"
+        mode: u=rw,g=,o=
+
+    - name: Copy mysql automatic login file
+      copy:
+        src: my.cnf
+        dest: ~/.my.cnf
+        owner: "{{ deploy_user.username }}"
+        group: "{{ deploy_user.username }}"
+        mode: u=rw,g=,o=
+
+    - name: Run migrations
+      shell: /home/{{ deploy_user.username }}/.rbenv/shims/bundle exec rake db:migrate
+      args:
+        chdir: /home/{{ deploy_user.username }}/DuckRecognizer

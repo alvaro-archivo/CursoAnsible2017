@@ -1,0 +1,15 @@
+---
+  
+- name: Create deploy users
+  hosts: app
+  become: yes
+  tags:
+    - general
+
+  tasks:
+
+    - name: Create user deploy v3
+      user:
+        name: "{{ deploy_user.username }}"
+        shell: "{{ deploy_user.shell }}"
+        groups: sudo

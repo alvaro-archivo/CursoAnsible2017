@@ -1,0 +1,16 @@
+---
+  
+- name: Upgrade packages and set hostname
+  hosts: all
+  become: yes
+  tags:
+    - general
+
+  tasks:
+
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: dist
+
+    - hostname:
+        name: vagrant1

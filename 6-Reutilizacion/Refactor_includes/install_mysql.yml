@@ -1,0 +1,46 @@
+---
+  
+- name: Install mysql
+  hosts: db
+  become: yes
+  become_user: root
+  tags:
+    - mysql
+
+  tasks:
+
+    # sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password 1234'
+    - name: Set MySQL root password
+      debconf:
+        name: mysql-server
+        question: mysql-server/root_password
+        value: "{{ mysql.root_password }}"
+        vtype: password
+
+    # sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password 1234'
+    - name: Set MySQL root password
+      debconf:
+        name: mysql-server
+        question: mysql-server/root_password_again
+        value: "{{ mysql.root_password }}"
+        vtype: password
+
+    # sudo apt-get install mysql-server mysql-client libmysqlclient-dev
+    - name: Install MySQL
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      with_items:
+        - mysql-server
+        - mysql-client
+        - libmysqlclient-dev
+        - python-mysqldb
+
+    - name: Copy mysql automatic login file
+      template:
+        src: my.cnf
+        dest: /root/.my.cnf
+        owner: root
+        group: root
+        mode: u=rw,g=,o=

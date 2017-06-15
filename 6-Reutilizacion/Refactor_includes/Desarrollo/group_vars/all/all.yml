@@ -1,6 +1,0 @@
----
-
-  database:
-    name: DuckRecognizer
-    user: duckuser
-    host: localhost

@@ -1,0 +1,27 @@
+- name: Install application
+  hosts: app
+  become: yes
+  become_user: root
+  tags:
+    - app
+
+  tasks:
+
+    - name: Clone app repository
+      become_user: "{{ deploy_user.username }}"
+      git:
+        repo: "{{ app.repository }}"
+        dest: "~/DuckRecognizer"
+
+    - name: Copy nginx host configuration
+      template:
+        src: app.conf
+        dest: /etc/nginx/sites-enabled/default
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+
+    -  name: Restart nginx
+       service:
+        name: nginx
+        state: restarted
